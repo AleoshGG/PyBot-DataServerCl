@@ -1,10 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+
 from users.infrastructure.routes.user_routes import usersBlueprint
 from admin.infrastructure.routes.admin_routes import adminBlueprint
-from flask_cors import CORS
-from database.conn.connection import engine, SessionLocal
-from users.infrastructure.dependences import db
+from database.conn.connection import engine
 
 # Inicializar Flask y SQLAlchemy
 app = Flask(__name__)
@@ -14,6 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app)
 
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
 
 # Registrar Blueprints
 app.register_blueprint(usersBlueprint, url_prefix='/users')

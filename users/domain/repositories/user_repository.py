@@ -6,3 +6,7 @@ class IUser(ABC):
     @abstractmethod
     def create_user(self, u: User) -> int:
         pass
+
+    @abstractmethod
+    def signIn(self, u: User) -> bool:
+        pass
