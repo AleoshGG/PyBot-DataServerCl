@@ -1,6 +1,6 @@
 from flask import jsonify
 from admin.application.useCases.createID_useCase import CreateId
-from admin.infrastructure.adapters.SQLALchemy import SQLAlchemy
+from admin.infrastructure.adapters.SQLAlchemy import SQLAlchemy
 from admin.domain.models.admin_model import Admin
 
 class CreateIdController:
