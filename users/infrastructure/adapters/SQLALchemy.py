@@ -8,18 +8,22 @@ class SQLAlchemy(IUser):
         self.session = SessionLocal()
 
     def create_user(self, du: DomainUser) -> int:
-        orm = UserORM(
-            first_name = du.first_name,
-            last_name  = du.last_name,
-            email      = du.email,
-            password   = du.password
-            )
+        try: 
+            orm = UserORM(
+                first_name = du.first_name,
+                last_name  = du.last_name,
+                email      = du.email,
+                password   = du.password
+                )
+            
+            self.session.add(orm)
+            self.session.commit()
+            self.session.refresh(orm)
+
+            return orm.user_id
+        except Exception as e:
+            print(f"Error al insertar con SQLAlchemy: {e}")
+            raise e
         
-        self.session.add(orm)
-        self.session.commit()
-        self.session.refresh(orm)
-
-        return orm.user_id
-
     def __del__(self):
         self.session.close()
