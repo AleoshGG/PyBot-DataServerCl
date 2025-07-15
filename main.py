@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager
 
 from users.infrastructure.routes.user_routes import usersBlueprint
 from admin.infrastructure.routes.admin_routes import adminBlueprint
+from flask_cors import CORS
 from database.conn.connection import engine
 
 # Inicializar Flask y SQLAlchemy
