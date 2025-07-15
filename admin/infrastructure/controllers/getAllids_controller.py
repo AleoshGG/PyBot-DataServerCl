@@ -1,10 +1,10 @@
 from flask import jsonify
 from admin.application.useCases.GetAllids_useCase import GetAllids
-from admin.infrastructure.adapters.SQLAlchemy import SQLAlchemy
+from admin.infrastructure.dependences import getSQLAlchemy
 
 class GetAllIdsController:
     def __init__(self):
-        self.SQLAlchemy = SQLAlchemy()
+        self.SQLAlchemy = getSQLAlchemy()
         self.use_case = GetAllids(db=self.SQLAlchemy)
 
     def getAllIds(self):

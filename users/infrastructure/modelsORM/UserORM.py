@@ -1,4 +1,4 @@
-from users.infrastructure.dependences import db
+from database.db import db
 
 class UserORM(db.Model):
     __tablename__ = 'users'

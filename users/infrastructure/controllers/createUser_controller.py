@@ -1,14 +1,13 @@
 from flask import jsonify
-from users.application.useCases.createUser_useCase import CreateUser
-from users.infrastructure.adapters.SQLAlchemy import SQLAlchemy
-from users.domain.models.user_model import User
 from users.application.services.encrypt_service import EncryptPasswordService
-from users.infrastructure.adapters.Bcrypt import BcryptAdapter
+from users.application.useCases.createUser_useCase import CreateUser
+from users.domain.models.user_model import User
+from users.infrastructure.dependences import getSQLAlchemy, getBcrypt
 class CreateUserController:
     def __init__(self):
-        self.SQLAlchemy = SQLAlchemy()
+        self.SQLAlchemy = getSQLAlchemy()
         self.use_case = CreateUser(db=self.SQLAlchemy)
-        bcypt = BcryptAdapter()
+        bcypt = getBcrypt()
         self.service_encrypt = EncryptPasswordService(bcypt)
 
     def createUser(self, d_body: dict):

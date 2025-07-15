@@ -24,6 +24,23 @@ class SQLAlchemy(IUser):
         except Exception as e:
             print(f"Error al insertar con SQLAlchemy: {e}")
             raise e
+
+    def signIn(self, email: str) -> DomainUser:
+        try:
+            u = UserORM.query.filter(UserORM.email == email).first()
+
+            du_user = DomainUser(
+                u.user_id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.password   
+            )
+
+            return du_user
+        except Exception as e:
+            print(f"Error al obtener el recurso: {e}")
+            raise e
         
     def __del__(self):
         self.session.close()

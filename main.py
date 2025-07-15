@@ -1,21 +1,31 @@
+import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
 
+from users.infrastructure.dependences import goDependencesUsers
+from admin.infrastructure.dependences import goDependencesAdmin
 from users.infrastructure.routes.user_routes import usersBlueprint
 from admin.infrastructure.routes.admin_routes import adminBlueprint
+from database.db import db
 from flask_cors import CORS
-from database.conn.connection import engine
+from database.conn.connection import engine, SessionLocal
+
+load_dotenv()
 
 # Inicializar Flask y SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = engine.url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")  
 
 CORS(app)
 
-db = SQLAlchemy(app)
+db.init_app(app)
+
+goDependencesUsers() #Dependencias de usuarios
+goDependencesAdmin()
 jwt = JWTManager(app)
 
 # Registrar Blueprints

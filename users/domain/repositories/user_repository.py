@@ -8,5 +8,5 @@ class IUser(ABC):
         pass
 
     @abstractmethod
-    def signIn(self, u: User) -> bool:
+    def signIn(self, email: str) -> User:
         pass

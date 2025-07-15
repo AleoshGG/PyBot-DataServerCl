@@ -1,4 +1,4 @@
-from admin.infrastructure.dependences import db
+from database.db import db
 
 class AdminORM(db.Model):
     __tablename__ = 'ids'
