@@ -1,0 +1,25 @@
+from database.conn.connection import SessionLocal
+from users.domain.models.user_model import User as DomainUser
+from users.domain.repositories.user_repository import IUser
+from users.infrastructure.modelsORM.UserORM import UserORM
+
+class SQLAlchemy(IUser):
+    def __init__(self):
+        self.session = SessionLocal()
+
+    def create_user(self, du: DomainUser) -> int:
+        orm = UserORM(
+            first_name = du.first_name,
+            last_name  = du.last_name,
+            email      = du.email,
+            password   = du.password
+            )
+        
+        self.session.add(orm)
+        self.session.commit()
+        self.session.refresh(orm)
+
+        return orm.user_id
+
+    def __del__(self):
+        self.session.close()
