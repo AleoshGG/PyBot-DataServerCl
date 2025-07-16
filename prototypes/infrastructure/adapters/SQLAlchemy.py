@@ -63,18 +63,21 @@ class PrototypeSQLAlchemy(IPrototype):
 
     def update_prototype(self, prototype_id: str, new_prototype_name: str) -> bool:
         try:
-            prototype = PrototypeORM.query.filter(PrototypeORM.prototype_id == prototype_id).first()
-            
-            if prototype:
-                prototype.prototype_name = new_prototype_name
-                self.session.commit()
-                return True
-            else:
+            # 1) Carga con la misma sesión (igual que en delete)
+            prototype = self.session.query(PrototypeORM).filter(
+                PrototypeORM.prototype_id == prototype_id
+            ).first()
+            if prototype is None:
                 return False
-        except Exception as e:
+            # 2) Modifica
+            prototype.prototype_name = new_prototype_name
+            # 3) Commit sobre self.session
+            self.session.commit()
+            return True
+        except Exception:
             self.session.rollback()
-            print(f"Error al actualizar prototipo: {e}")
-            raise e
-        
+            raise
+        finally:
+            self.session.close()
     def __del__(self):
         self.session.close()

@@ -17,12 +17,12 @@ def getPrototypes(user_id):
     controller = GetPrototypesController()
     return controller.getPrototypes(user_id=user_id)
 
-@prototypesBlueprint.route('/delete/<int:prototype_id>', methods=['DELETE'])
+@prototypesBlueprint.route('/<string:prototype_id>', methods=['DELETE'])
 def deletePrototype(prototype_id):
     controller = DeletePrototypeController()
     return controller.deletePrototype(prototype_id=prototype_id)
 
-@prototypesBlueprint.route('/update/<string:prototype_id>', methods=['UPDATE'])
+@prototypesBlueprint.route('/<string:prototype_id>', methods=['PUT'])
 def updatePrototype(prototype_id):
     data = request.get_json
     controller = UpdatePrototypeController()

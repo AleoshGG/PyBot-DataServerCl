@@ -7,4 +7,4 @@ class DeletePrototype:
         self.db = db
 
     def run(self, prototype_id: str) -> bool:
-        return self.db.delete_protoype(prototype_id)
+        return self.db.delete_prototype(prototype_id)
