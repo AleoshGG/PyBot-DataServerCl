@@ -63,10 +63,11 @@ class SignInController:
                 }), 401
             else:
                 expires = timedelta(hours=5)
-                access_token = create_access_token(identity=user.user_id, expires_delta=expires)
+                access_token = create_access_token(identity=str(userF.user_id), expires_delta=expires)
                 return jsonify({
                      "mensaje": "Inicio de sesión exitoso", 
-                     "access_token": access_token
+                     "access_token": access_token,
+                     "status": True
                 }), 200
 
         except Exception as e:

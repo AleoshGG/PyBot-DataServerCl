@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from users.domain.repositories.user_repository import IUser
-from users.domain.models.user_model import User
 
 @dataclass
-class CreateUser:
+class DeleteUser:
     def __init__(self, db: IUser):
         self.db = db
-    
-    def run(self, user: User) -> int:
-        return self.db.create_user(user)
+
+    def run(self, user_id: int)-> bool:
+        return self.db.delete_user(user_id)
