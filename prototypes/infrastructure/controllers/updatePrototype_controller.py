@@ -1,11 +1,15 @@
 from flask import jsonify
+from prototypes.application.services.validateId_service import ValidateIdService
 from prototypes.application.useCases.updatePrototype_useCase import UpdatePrototype
+from prototypes.infrastructure.adapters.Validate import ValidateId
 from prototypes.infrastructure.dependences import getSQLAlchemy
 
 class UpdatePrototypeController:
     def __init__(self):
         self.SQLAlchemy = getSQLAlchemy()
         self.use_case = UpdatePrototype(db=self.SQLAlchemy)
+        validador = ValidateId()
+        self.sValidador = ValidateIdService(validador)
 
     def updatePrototype(self, prototype_id: str, d_body: dict):
         try:
@@ -14,6 +18,20 @@ class UpdatePrototypeController:
                     "status": False,
                     "error": "El prototype_id es obligatorio y no debe estar vacío."
                 }), 400
+            
+            try:
+                itExist = self.sValidador.run(prototype_id)
+                
+                if itExist == False:
+                    return jsonify({
+                        "status": False,
+                        "error": "El Id no es válido."
+                    }), 400
+            except Exception as e:
+                return jsonify({
+                    "status": False,
+                    "error": f"Error al validar el ID: {e}."
+                }), 5000
 
             if not d_body:
                 return jsonify({

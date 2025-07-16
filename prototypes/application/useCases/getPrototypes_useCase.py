@@ -9,4 +9,4 @@ class GetPrototypes:
         self.db = db
 
     def run(self, user_id: int) -> List[Prototype]:
-        return self.db.get_protoypes_by_user(user_id)
+        return self.db.get_prototypes_by_user(user_id)

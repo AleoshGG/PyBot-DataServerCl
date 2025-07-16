@@ -1,12 +1,16 @@
 from flask import jsonify
+from prototypes.application.services.validateId_service import ValidateIdService
 from prototypes.application.useCases.createProtoype_useCase import CreatePrototype
 from prototypes.domain.models.prototype_model import Prototype
+from prototypes.infrastructure.adapters.Validate import ValidateId
 from prototypes.infrastructure.dependences import getSQLAlchemy
 
 class CreatePrototypeController:
     def __init__(self):
         self.SQLAlchemy = getSQLAlchemy()
         self.use_case = CreatePrototype(db=self.SQLAlchemy)
+        validador = ValidateId()
+        self.sValidador = ValidateIdService(validador)
 
     def createPrototype(self, d_body: dict):
         try:
@@ -37,6 +41,20 @@ class CreatePrototypeController:
                 "status": False,
                 "error": f"Error al obtener datos del cuerpo del body: {e}"
             }), 400
+
+        try:
+            itExist = self.sValidador.run(prototype.prototype_id)
+            
+            if itExist == False:
+                return jsonify({
+                    "status": False,
+                    "error": "El Id no es válido."
+                }), 400
+        except Exception as e:
+            return jsonify({
+                    "status": False,
+                    "error": f"Error al validar el ID: {e}."
+                }), 5000
 
         try: 
             prototype_id = self.use_case.run(prototype)
