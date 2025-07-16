@@ -6,8 +6,10 @@ from dotenv import load_dotenv
 
 from users.infrastructure.dependences import goDependencesUsers
 from admin.infrastructure.dependences import goDependencesAdmin
+from prototypes.infrastructure.dependences import goDependencesPrototypes
 from users.infrastructure.routes.user_routes import usersBlueprint
 from admin.infrastructure.routes.admin_routes import adminBlueprint
+from prototypes.infrastructure.routes.prototype_routes import prototypesBlueprint
 from database.db import db
 from flask_cors import CORS
 from database.conn.connection import engine, SessionLocal
@@ -26,11 +28,13 @@ db.init_app(app)
 
 goDependencesUsers() #Dependencias de usuarios
 goDependencesAdmin()
+goDependencesPrototypes()
 jwt = JWTManager(app)
 
 # Registrar Blueprints
 app.register_blueprint(usersBlueprint, url_prefix='/users')
 app.register_blueprint(adminBlueprint, url_prefix='/admin')
+app.register_blueprint(prototypesBlueprint, url_prefix='/prototypes')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=1200, debug=True)

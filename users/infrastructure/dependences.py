@@ -1,6 +1,6 @@
 # users/infrastructure/dependences.py
 
-from users.infrastructure.adapters.SQLAlchemy import SQLAlchemy as sql
+from users.infrastructure.adapters.SQLALchemy import SQLAlchemy as sql
 from users.infrastructure.adapters.Bcrypt import BcryptAdapter
 
 # Variables globales para las dependencias
