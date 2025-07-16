@@ -41,6 +41,59 @@ class SQLAlchemy(IUser):
         except Exception as e:
             print(f"Error al obtener el recurso: {e}")
             raise e
-        
+
+    def get_user(self, user_id: int) -> DomainUser:
+        try:
+            u = UserORM.query.get(user_id)
+            
+            du_user = DomainUser(
+                u.user_id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                ""   
+            )
+
+            return du_user
+        except Exception as e:
+            print(f"Error al obtener el recurso por el ID: {e}")
+            raise e
+            
+    def delete_user(self, user_id: int) -> bool:
+        try:
+            u = self.session.get(UserORM, user_id)  
+            if u is None:
+                return False
+            
+            self.session.delete(u)
+            self.session.commit()
+            return True
+
+        except Exception:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()
+    
+    def update_user_name(self, user_id: int, name: str) -> bool:
+        try:
+            # 1) Carga con la misma sesión
+            u = self.session.get(UserORM, user_id)  
+            if u is None:
+                return False
+
+            # 2) Modifica
+            u.first_name = name
+
+            # 3) Commit sobre self.session
+            self.session.commit()
+            return True
+
+        except Exception:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()
+
     def __del__(self):
         self.session.close()
