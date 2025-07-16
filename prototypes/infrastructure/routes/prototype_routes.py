@@ -6,24 +6,24 @@ from prototypes.infrastructure.controllers.deletePrototype_controller import Del
 
 prototypesBlueprint = Blueprint('prototypes', __name__)
 
-@prototypesBlueprint.route('/addPrototype', methods=['POST'])
+@prototypesBlueprint.route('/', methods=['POST'])
 def addPrototype():
     data = request.get_json()
     controller = CreatePrototypeController()
     return controller.createPrototype(d_body=data)
 
-@prototypesBlueprint.route('/list/<int:user_id>', methods=['GET'])
-def getPrototypes(user_id):
+@prototypesBlueprint.route('/', methods=['GET'])
+def getPrototypes():
     controller = GetPrototypesController()
-    return controller.getPrototypes(user_id=user_id)
+    return controller.getPrototypes()
 
 @prototypesBlueprint.route('/<string:prototype_id>', methods=['DELETE'])
 def deletePrototype(prototype_id):
     controller = DeletePrototypeController()
     return controller.deletePrototype(prototype_id=prototype_id)
 
-@prototypesBlueprint.route('/<string:prototype_id>', methods=['PUT'])
-def updatePrototype(prototype_id):
-    data = request.get_json
+@prototypesBlueprint.route('/', methods=['PUT'])
+def updatePrototype():
+    data = request.get_json()
     controller = UpdatePrototypeController()
-    return controller.updatePrototype(prototype_id=prototype_id, d_body= data)
+    return controller.updatePrototype(d_body=data)

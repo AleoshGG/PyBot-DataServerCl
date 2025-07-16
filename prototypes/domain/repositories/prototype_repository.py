@@ -17,5 +17,5 @@ class IPrototype(ABC):
         pass
 
     @abstractmethod
-    def update_prototype(self, prototype_id: str, new_prototype_name: str) -> bool:
+    def update_prototype(self, prototype_id: str, new_prototype_name: str, new_id: str) -> bool:
         pass

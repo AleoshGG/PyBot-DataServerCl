@@ -1,12 +1,14 @@
 from flask import jsonify
 from prototypes.application.useCases.deletePrototype_useCase import DeletePrototype
 from prototypes.infrastructure.dependences import getSQLAlchemy
+from flask_jwt_extended import jwt_required
 
 class DeletePrototypeController:
     def __init__(self):
         self.SQLAlchemy = getSQLAlchemy()
         self.use_case = DeletePrototype(db=self.SQLAlchemy)
 
+    @jwt_required()
     def deletePrototype(self, prototype_id: str):
         try:
             if not prototype_id or prototype_id.strip() == "":

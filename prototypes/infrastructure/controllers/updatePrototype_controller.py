@@ -3,6 +3,7 @@ from prototypes.application.services.validateId_service import ValidateIdService
 from prototypes.application.useCases.updatePrototype_useCase import UpdatePrototype
 from prototypes.infrastructure.adapters.Validate import ValidateId
 from prototypes.infrastructure.dependences import getSQLAlchemy
+from flask_jwt_extended import jwt_required
 
 class UpdatePrototypeController:
     def __init__(self):
@@ -11,16 +12,31 @@ class UpdatePrototypeController:
         validador = ValidateId()
         self.sValidador = ValidateIdService(validador)
 
-    def updatePrototype(self, prototype_id: str, d_body: dict):
+    @jwt_required()
+    def updatePrototype(self, d_body: dict):
         try:
-            if not prototype_id or prototype_id.strip() == "":
+            print(d_body)
+            if not d_body:
                 return jsonify({
                     "status": False,
-                    "error": "El prototype_id es obligatorio y no debe estar vacío."
+                    "error": "El cuerpo de la petición está vacío."
                 }), 400
+
+            required_fields = ["prototype_id", "new_name", "new_id"]
+            for field in required_fields:
+                value = d_body.get(field)
+                if not value or str(value).strip() == "":
+                    return jsonify({
+                        "status": False,
+                        "error": f"El campo '{field}' es obligatorio y no debe estar vacío."
+                    }), 400
+                
+            prototype_id = d_body.get("prototype_id")
+            new_name = d_body.get("new_name")
+            new_id = d_body.get("new_id")
             
             try:
-                itExist = self.sValidador.run(prototype_id)
+                itExist = self.sValidador.run(new_id)
                 
                 if itExist == False:
                     return jsonify({
@@ -33,20 +49,7 @@ class UpdatePrototypeController:
                     "error": f"Error al validar el ID: {e}."
                 }), 5000
 
-            if not d_body:
-                return jsonify({
-                    "status": False,
-                    "error": "El cuerpo de la petición está vacío."
-                }), 400
-
-            new_prototype_name = d_body.get("prototype_name")
-            if not new_prototype_name or str(new_prototype_name).strip() == "":
-                return jsonify({
-                    "status": False,
-                    "error": "El campo 'prototype_name' es obligatorio y no debe estar vacío."
-                }), 400
-
-            result = self.use_case.run(prototype_id.strip(), new_prototype_name.strip())
+            result = self.use_case.run(prototype_id, new_name, new_id)
             
             if result:
                 return jsonify({
@@ -54,9 +57,9 @@ class UpdatePrototypeController:
                     "message": "Prototipo actualizado exitosamente",
                     "data": {
                         "type": "prototypes",
-                        "prototype_id": prototype_id,
+                        "prototype_id": d_body.get("new_id"),
                         "attributes": {
-                            "prototype_name": new_prototype_name.strip()
+                            "prototype_name": d_body.get("new_name")
                         }
                     }
                 }), 200

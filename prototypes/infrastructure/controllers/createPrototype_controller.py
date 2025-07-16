@@ -4,6 +4,7 @@ from prototypes.application.useCases.createProtoype_useCase import CreatePrototy
 from prototypes.domain.models.prototype_model import Prototype
 from prototypes.infrastructure.adapters.Validate import ValidateId
 from prototypes.infrastructure.dependences import getSQLAlchemy
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class CreatePrototypeController:
     def __init__(self):
@@ -12,6 +13,7 @@ class CreatePrototypeController:
         validador = ValidateId()
         self.sValidador = ValidateIdService(validador)
 
+    @jwt_required()
     def createPrototype(self, d_body: dict):
         try:
             if not d_body:
@@ -20,7 +22,7 @@ class CreatePrototypeController:
                     "error": "El cuerpo de la petición está vacío."
                 }), 400
 
-            required_fields = ["prototype_id", "prototype_name", "user_id"]
+            required_fields = ["prototype_id", "prototype_name"]
             for field in required_fields:
                 value = d_body.get(field)
                 if not value or str(value).strip() == "":
@@ -29,11 +31,18 @@ class CreatePrototypeController:
                         "error": f"El campo '{field}' es obligatorio y no debe estar vacío."
                     }), 400
 
+            user_id = get_jwt_identity()
+            if not user_id:
+                return jsonify({
+                    "status": False,
+                    "error": "No se proporcionó ID."
+                }), 404
+            
             prototype = Prototype(
                 d_body.get("prototype_id").strip(),
                 d_body.get("prototype_name").strip(),
                 "default",  # model por defecto
-                d_body.get("user_id")
+                user_id
             )
         except Exception as e:
             print(f"Error al obtener datos del cuerpo del body: {e}")

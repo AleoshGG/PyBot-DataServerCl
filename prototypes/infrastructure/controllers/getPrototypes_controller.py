@@ -1,14 +1,23 @@
 from flask import jsonify
 from prototypes.application.useCases.getPrototypes_useCase import GetPrototypes
 from prototypes.infrastructure.dependences import getSQLAlchemy
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class GetPrototypesController:
     def __init__(self):
         self.SQLAlchemy = getSQLAlchemy()
         self.use_case = GetPrototypes(db=self.SQLAlchemy)
 
-    def getPrototypes(self, user_id: int):
+    @jwt_required()
+    def getPrototypes(self):
         try:
+            user_id = get_jwt_identity()
+            if not user_id:
+                return jsonify({
+                    "status": False,
+                    "error": "No se proporcionó ID."
+                }), 404
+
             prototypes = self.use_case.run(user_id)
             
             prototypes_data = []
