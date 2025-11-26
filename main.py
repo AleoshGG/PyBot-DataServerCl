@@ -37,4 +37,4 @@ app.register_blueprint(adminBlueprint, url_prefix='/admin')
 app.register_blueprint(prototypesBlueprint, url_prefix='/prototypes')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=1200, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)

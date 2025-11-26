@@ -1,0 +1,10 @@
+gunicorn
+flask
+flask_cors
+flask_jwt_extended
+python-dotenv
+flask_sqlalchemy
+bcrypt
+sqlalchemy
+psycopg2-binary
+flask_bcrypt
